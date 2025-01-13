@@ -60,6 +60,21 @@ function storeReview(req, res) {
 
     const intVote = parseInt(vote)
 
+    // VALIDAZIONE VOTO E NOME
+
+    if (
+        !name ||
+        !intVote ||
+        isNaN(intVote) ||
+        intVote < 1 ||
+        intVote > 5 ||
+        name?.length > 255 ||
+        typeof name !== 'string'
+
+    ) {
+        return res.status(400).json({ message: 'The data is invalid' })
+    }
+
     const sql = `INSERT INTO reviews (text, name, vote, movie_id) VALUES (?, ?, ?, ?)`
 
     connection.query(sql, [text, name, intVote, id], (err, results) => {
