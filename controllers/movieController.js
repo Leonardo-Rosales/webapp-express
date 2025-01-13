@@ -6,6 +6,7 @@ function index(req, res) {
     SELECT * 
     FROM movies`
 
+
     connection.query(sql, (err, movies) => {
 
         if (err) return res.status(500).json({ message: err.message })
@@ -50,4 +51,23 @@ function show(req, res) {
 
 }
 
-module.exports = { index, show }
+function storeReview(req, res) {
+
+    const id = req.params.id
+
+    const { text, vote, name } = req.body
+    console.log(text, vote, name, id);
+
+    const intVote = parseInt(vote)
+
+    const sql = `INSERT INTO reviews (text, name, vote, movie_id) VALUES (?, ?, ?, ?)`
+
+    connection.query(sql, [text, name, intVote, id], (err, results) => {
+        if (err) return res.status(500).json({ message: 'Database query failed!' })
+
+        res.status(201).json({ message: 'Review added', id: results.insertId })
+    })
+
+}
+
+module.exports = { index, show, storeReview }
